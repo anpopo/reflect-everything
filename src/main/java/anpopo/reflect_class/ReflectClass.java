@@ -36,6 +36,11 @@ public class ReflectClass {
             System.out.println();
         }
 
+
+        for (Class<?> clazz : classes) {
+            System.out.println(RecursiveInterfaceFinder.findAllImplementedInterface(clazz));
+            System.out.println();
+        }
     }
 
     private static void printClassInfo(Class<?>... classes) {
