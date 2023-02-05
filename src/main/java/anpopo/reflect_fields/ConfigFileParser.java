@@ -1,9 +1,8 @@
 package anpopo.reflect_fields;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +23,7 @@ public class ConfigFileParser {
 
             T instance = constructor.newInstance();
 
-            String line ;
+            String line;
             while ((line = br.readLine()) != null) {
                 String trimmedLine = line.trim();
                 int index = trimmedLine.indexOf("=");
@@ -43,7 +42,10 @@ public class ConfigFileParser {
                     continue;
                 }
 
-                Object fieldValue = parseValue(field.getType(), value);
+                Object fieldValue =
+                    field.getType().isArray()
+                        ? parseArray(field.getType(), value)
+                        : parseValue(field.getType(), value);
 
                 field.setAccessible(true);
                 field.set(instance, fieldValue);
@@ -52,9 +54,17 @@ public class ConfigFileParser {
             return instance;
         } catch (IOException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             logger.severe(e.getMessage());
-            throw new UnsupportedOperationException( "Failed to create config object: " + clazz.getName());
+            throw new UnsupportedOperationException("Failed to create config object: " + clazz.getName());
         }
+    }
 
+    private static Object parseArray(Class<?> type, String value) {
+        String[] values = value.split(",");
+        Object array = Array.newInstance(type.getComponentType(), values.length);
+        for (int i = 0; i < values.length; i++) {
+            Array.set(array, i, parseValue(type.getComponentType(), values[i]));
+        }
+        return array;
     }
 
     private static Object parseValue(Class<?> type, String value) {

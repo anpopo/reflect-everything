@@ -18,7 +18,8 @@ class ConfigFileParserTest {
 
         assertEquals("대장장이키우기", configFile.getName());
         assertEquals(12, configFile.getAgeLimit());
-        assertEquals(Category.ADVENTURE, configFile.getCategory());
+        assertEquals(2, configFile.getCategories().length);
+        assertArrayEquals(new Category[] { Category.ADVENTURE, Category.ACTION }, configFile.getCategories());
     }
 
 }

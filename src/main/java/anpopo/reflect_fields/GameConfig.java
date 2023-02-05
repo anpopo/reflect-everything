@@ -5,7 +5,7 @@ import anpopo.reflect_fields.FieldsMain.Category;
 public class GameConfig {
     private String name;
     private int ageLimit;
-    private Category category;
+    private Category[] categories;
 
     public String getName() {
         return name;
@@ -15,7 +15,7 @@ public class GameConfig {
         return ageLimit;
     }
 
-    public Category getCategory() {
-        return category;
+    public Category[] getCategories() {
+        return categories;
     }
 }
